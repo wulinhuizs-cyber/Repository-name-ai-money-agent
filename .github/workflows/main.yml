@@ -1,20 +1,24 @@
-- name: Build Prompt for AI
-  run: |
-    DATA=$(curl -s https://rsshub.app/producthunt/daily \
-    | grep "<title>" \
-    | sed 's/<[^>]*>//g' \
-    | head -n 10)
+name: AI Money Intelligence
 
-    echo "================ AI日报输入模板 ================"
-    echo ""
-    echo "你是AI商业分析专家，请基于以下信息输出日报："
-    echo "1. 今日AI趋势"
-    echo "2. AI新工具/产品"
-    echo "3. 赚钱机会（重点）"
-    echo "4. 普通人可执行方案"
-    echo "5. 关键AI知识点"
-    echo ""
-    echo "【信息源】"
-    echo "$DATA"
-    echo ""
-    echo "==============================================="
+on:
+  workflow_dispatch: # 让你手动点按钮运行
+  schedule:
+    - cron: '0 0 * * *' # 每天北京时间早上8点自动跑一次
+
+jobs:
+  run-spider:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检查代码
+        uses: actions/checkout@v3
+
+      - name: 安装 Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 安装抓取工具
+        run: pip install feedparser
+
+      - name: 开始抓取并生成 Prompt
+        run: python main.py
