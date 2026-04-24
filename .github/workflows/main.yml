@@ -1,1 +1,41 @@
 
+name: Daily AI Money News
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch RSS
+        run: |
+          curl https://rsshub.app/github/trending/daily > news.txt
+          curl https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg >> news.txt
+          curl https://rsshub.app/twitter/user/ShaanVP >> news.txt
+
+      - name: Call Gemini API
+        env:
+          API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          PROMPT="请从以下内容筛选：
+1. AI新工具
+2. 赚钱机会
+3. 可执行方向
+
+内容：
+$(cat news.txt)"
+
+          curl -X POST \
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$API_KEY" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"contents\": [{
+              \"parts\": [{
+                \"text\": \"$PROMPT\"
+              }]
+            }]
+          }"
