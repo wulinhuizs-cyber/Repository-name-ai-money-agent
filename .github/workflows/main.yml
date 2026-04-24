@@ -16,13 +16,26 @@ jobs:
           curl https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg >> news.txt
           curl https://rsshub.app/twitter/user/ShaanVP >> news.txt
 
-      - name: Generate Report (AI模拟版)
+      - name: Call Gemini API (latest)
+        env:
+          API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          echo "==== AI赚钱日报 ====" > report.txt
-          echo "今日重点：" >> report.txt
-          echo "1. 新AI工具趋势" >> report.txt
-          echo "2. 潜在赚钱机会" >> report.txt
-          echo "3. 可操作方向" >> report.txt
-          echo "" >> report.txt
-          echo "（下一步会接入真实AI分析）" >> report.txt
-          cat report.txt
+          PROMPT="你是一个AI信息分析助手。
+请从以下内容中提取：
+1. 新AI工具
+2. 可能赚钱的机会
+3. 可执行行动建议
+
+内容：
+$(cat news.txt)"
+
+          curl -X POST \
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$API_KEY" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"contents\": [{
+              \"parts\": [{
+                \"text\": \"$PROMPT\"
+              }]
+            }]
+          }"
