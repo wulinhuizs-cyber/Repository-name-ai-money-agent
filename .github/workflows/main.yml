@@ -1,4 +1,3 @@
-
 name: Daily AI Money News
 
 on:
@@ -21,10 +20,10 @@ jobs:
         env:
           API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          PROMPT="请从以下内容筛选：
-1. AI新工具
-2. 赚钱机会
-3. 可执行方向
+          PROMPT="请分析以下内容，提取：
+- AI新工具
+- 赚钱机会
+- 可执行建议
 
 内容：
 $(cat news.txt)"
