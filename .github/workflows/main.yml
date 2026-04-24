@@ -1,0 +1,14 @@
+name: Daily AI News
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 每天自动运行（UTC时间）
+  workflow_dispatch:      # 允许手动运行
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print test
+        run: echo "Agent is running successfully"
