@@ -1,8 +1,6 @@
-name: Daily AI Money News
+name: Daily AI News
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,31 +8,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fetch RSS
+      - name: Create Prompt
         run: |
-          curl https://rsshub.app/github/trending/daily > news.txt
-          curl https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg >> news.txt
-          curl https://rsshub.app/twitter/user/ShaanVP >> news.txt
+          echo "请生成一份今日AI赚钱/工具/趋势日报，要求真实、有用、简洁。" > prompt.txt
 
       - name: Call Gemini API
-        env:
-          API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          PROMPT="请分析以下内容，提取：
-- AI新工具
-- 赚钱机会
-- 可执行建议
-
-内容：
-$(cat news.txt)"
-
-          curl -X POST \
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$API_KEY" \
+          curl -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
           -H "Content-Type: application/json" \
           -d "{
             \"contents\": [{
               \"parts\": [{
-                \"text\": \"$PROMPT\"
+                \"text\": \"$(cat prompt.txt)\"
               }]
             }]
           }"
