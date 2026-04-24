@@ -2,13 +2,21 @@ name: Daily AI News
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # 每天自动运行（UTC时间）
-  workflow_dispatch:      # 允许手动运行
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   run:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print test
-        run: echo "Agent is running successfully"
+      - name: Fetch RSS feeds
+        run: |
+          echo "GitHub Trending:"
+          curl https://rsshub.app/github/trending/daily
+
+          echo "YouTube:"
+          curl https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg
+
+          echo "X (Twitter):"
+          curl https://rsshub.app/twitter/user/ShaanVP
