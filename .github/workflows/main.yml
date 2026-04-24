@@ -1,4 +1,4 @@
-name: Daily AI News
+name: Daily AI Money News
 
 on:
   schedule:
@@ -10,13 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fetch RSS feeds
+      - name: Fetch RSS
         run: |
-          echo "GitHub Trending:"
-          curl https://rsshub.app/github/trending/daily
+          curl https://rsshub.app/github/trending/daily > news.txt
+          curl https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg >> news.txt
+          curl https://rsshub.app/twitter/user/ShaanVP >> news.txt
 
-          echo "YouTube:"
-          curl https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg
-
-          echo "X (Twitter):"
-          curl https://rsshub.app/twitter/user/ShaanVP
+      - name: Generate Report (AI模拟版)
+        run: |
+          echo "==== AI赚钱日报 ====" > report.txt
+          echo "今日重点：" >> report.txt
+          echo "1. 新AI工具趋势" >> report.txt
+          echo "2. 潜在赚钱机会" >> report.txt
+          echo "3. 可操作方向" >> report.txt
+          echo "" >> report.txt
+          echo "（下一步会接入真实AI分析）" >> report.txt
+          cat report.txt
