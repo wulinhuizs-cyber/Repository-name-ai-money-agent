@@ -1,29 +1,20 @@
-- name: Auto AI Daily Report
-  env:
-    API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+- name: Build Prompt for AI
   run: |
     DATA=$(curl -s https://rsshub.app/producthunt/daily \
-    | grep -E "<title>|<description>" \
+    | grep "<title>" \
     | sed 's/<[^>]*>//g' \
-    | head -n 20)
+    | head -n 10)
 
-    PROMPT="基于以下AI信息，直接生成一份【AI赚钱日报】：
-    
-    要求：
-    1. 3个最值得做的赚钱机会（必须具体）
-    2. 每个机会给出普通人执行步骤
-    3. 总结今日AI趋势
-    
-    信息：
-    $DATA
-    "
-
-    curl https://openrouter.ai/api/v1/chat/completions \
-      -H "Authorization: Bearer $API_KEY" \
-      -H "Content-Type: application/json" \
-      -d "{
-        \"model\": \"openai/gpt-4o-mini\",
-        \"messages\": [
-          {\"role\": \"user\", \"content\": \"$PROMPT\"}
-        ]
-      }"
+    echo "================ AI日报输入模板 ================"
+    echo ""
+    echo "你是AI商业分析专家，请基于以下信息输出日报："
+    echo "1. 今日AI趋势"
+    echo "2. AI新工具/产品"
+    echo "3. 赚钱机会（重点）"
+    echo "4. 普通人可执行方案"
+    echo "5. 关键AI知识点"
+    echo ""
+    echo "【信息源】"
+    echo "$DATA"
+    echo ""
+    echo "==============================================="
