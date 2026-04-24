@@ -11,33 +11,13 @@ jobs:
       - name: Fetch RSS
         run: |
           curl -s https://rsshub.app/github/trending/daily > news.txt
-          curl -s https://rsshub.app/producthunt/popular >> news.txt
-          curl -s https://rsshub.app/hackernews >> news.txt
 
       - name: Call Gemini API
         env:
           API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          PROMPT="你是一个AI商业分析师，请从以下信息中筛选：
-1. AI新工具
-2. 可赚钱机会（要具体）
-3. 可执行副业方向（普通人能做）
+          CONTENT=$(cat news.txt | tr '\n' ' ')
 
-输出格式：
-【AI工具】
-【赚钱机会】
-【行动建议】
-
-内容：
-$(cat news.txt)"
-
-          curl -s -X POST \
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$API_KEY" \
+          curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$API_KEY" \
           -H "Content-Type: application/json" \
-          -d "{
-            \"contents\": [{
-              \"parts\": [{
-                \"text\": \"$PROMPT\"
-              }]
-            }]
-          }"
+          -d "{\"contents\":[{\"parts\":[{\"text\":\"请从以下信息中提取AI工具、赚钱机会和副业方向：$CONTENT\"}]}]}"
