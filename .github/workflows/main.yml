@@ -1,4 +1,4 @@
-name: Daily Simple Report
+name: AI Money Intelligence
 
 on:
   workflow_dispatch:
@@ -10,11 +10,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Fetch News
+      - name: Generate Intelligence Feed
         run: |
-          echo "=== 今日信息源 ==="
-          curl -s https://rsshub.app/github/trending/daily | head -n 20
+          echo "===== AI赚钱情报日报（复制给AI） ====="
           echo ""
-          echo "=== YouTube AI频道 ==="
-          curl -s https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg | head -n 20
-          
+          echo "你是AI商业分析专家，请基于以下信息输出："
+          echo "1. 今日AI趋势"
+          echo "2. AI新工具/产品"
+          echo "3. 赚钱机会（重点）"
+          echo "4. 普通人可执行方案"
+          echo "5. 关键AI知识点"
+          echo ""
+
+          echo "【信息源开始】"
+
+          echo ""
+          echo "【GitHub热门项目】"
+          curl -s https://rsshub.app/github/trending/daily \
+          | grep "<title>" | sed 's/<[^>]*>//g' | tail -n +2 | head -n 5
+
+          echo ""
+          echo "【Hacker News】"
+          curl -s https://rsshub.app/hackernews \
+          | grep "<title>" | sed 's/<[^>]*>//g' | tail -n +2 | head -n 5
+
+          echo ""
+          echo "【Product Hunt】"
+          curl -s https://rsshub.app/producthunt/daily \
+          | grep "<title>" | sed 's/<[^>]*>//g' | tail -n +2 | head -n 5
+
+          echo ""
+          echo "【AI YouTube】"
+          curl -s https://rsshub.app/youtube/channel/UCiT9RITQ9PW6BhXK0y2jaeg \
+          | grep "<title>" | sed 's/<[^>]*>//g' | tail -n +2 | head -n 5
+
+          echo ""
+          echo "===== 结束 ====="
